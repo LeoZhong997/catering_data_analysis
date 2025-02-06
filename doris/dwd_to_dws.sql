@@ -1,4 +1,14 @@
+-- 在 Doris 数据库 中将数据从 DWD 层（明细层） 转换并加载到 DWS 层（汇总层）
+-- 目的是通过对订单数据进行聚合和汇总，生成更高层次的统计表，以便支持后续的分析和报表生成。
+-- 构建数据仓库的 DWS 层
+--  1. 创建多个聚合表（如 dws_member_dish_stat 和 dws_shop_city_stat）。
+--  2. 从 DWD 层加载数据到 DWS 层。
+--  3. 提供首日装载和每日增量装载的 SQL 语句。
+--  4. 支持后续的统计分析需求。
+
+-- 创建 DWS 层聚合表
 -- 1日各会员各类别的stat
+-- 按天统计每个会员在每个菜品类别上的订单量、销量和销售额
 drop table if exists dws_member_dish_stat;
 create table if not exists dws_member_dish_stat(
     member_id bigint comment '用户id',
@@ -9,16 +19,24 @@ create table if not exists dws_member_dish_stat(
     slaves_volume int sum default '0' comment '销量',
     total_sales decimal(16, 2)  sum default '0' comment '销售额'
 )
+-- 使用 aggregate key 定义主键字段，确保数据在插入时自动聚合
 aggregate key(`member_id`, `member_name`, `dish_category`, `pay_date`)
 distributed by hash(`member_id`) buckets 1
 properties(
     "replication_num" = "1"
 );
 
--- 为 dws_member_dish_stat 的 dish_id,dish_category创建bitmap索引
+-- 为 dws_member_dish_stat 的 dish_id,dish_category创建bitmap索引，以加速查询性能
 create index if not exists dish_name_idx on dws_member_dish_stat (dish_category) using bitmap comment '类品名称列bitmap索引';
 
+-- 从 DWD 层加载数据到 DWS 层
 -- 首日装载
+-- 将 DWD 层的订单明细数据（dwd_order_detail）与维度表（dim_member_info 和 dim_dish_info）关联后，
+-- 按会员、菜品类别和支付日期进行汇总，并加载到 dws_member_dish_stat 表中。
+--  过滤出已结算的订单（is_paid = '1'）
+--  使用 bitmap_union 和 bitmap_count 计算订单量
+--  使用 sum 函数计算销量和销售额
+--  按 member_id、member_name、dish_category 和payment_time分组
 insert into private_station.dws_member_dish_stat
 select
     order_detail.member_id,
@@ -64,7 +82,8 @@ group by
     dish_info.dish_category,
     date(payment_time);
 
--- 每日装载
+-- 每日装载，每日增量加载新的订单数据
+--  通过 WHERE 条件筛选出指定日期范围内的数据（例如前一天的数据）
 # insert into private_station.dws_member_dish_stat
 select
     order_detail.member_id,
@@ -113,6 +132,7 @@ group by
 
 
 -- 1日各城市各店铺的stat
+-- 按天统计每个城市的每个店铺的订单量、销量和销售额。
 drop table if exists dws_shop_city_stat;
 create table if not exists dws_shop_city_stat(
     `shop_location` varchar(10) comment '店铺所在地',
@@ -122,6 +142,7 @@ create table if not exists dws_shop_city_stat(
     `slaves_volume` int sum default '0' comment '销量',
     `total_sales` decimal(16, 2) sum default '0' comment '销售额'
 )
+-- 使用 aggregate key 定义主键字段，确保数据在插入时自动聚合
 aggregate key(`shop_location`, `shop_name`, `pay_date`)
 distributed by hash(`shop_location`) buckets 1
 properties(

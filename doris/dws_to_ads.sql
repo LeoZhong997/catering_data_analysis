@@ -1,4 +1,13 @@
+-- 在 Doris 数据库 中将数据从 DWS 层（汇总层） 转换并加载到 ADS 层（应用层）。
+-- 主要目的是通过对 DWS 层的数据进行进一步的聚合和汇总，生成面向具体业务需求的应用层报表或指标表
+--  1. 创建多个应用层表（如 ads_dish_category_1day 和 ads_city_1day）。
+--  2. 从 DWS 层加载数据到 ADS 层。
+--  3. 提供首日装载和每日增量装载的 SQL 语句。
+--  4. 支持最终的业务分析和决策需求。
+
+-- 创建 ADS 层表
 -- ads_dish_catagory_1day, 每日各品类别的销售指标
+-- 按天统计每个菜品类别的订单量、销量和销售额
 drop table if exists ads_dish_category_1day;
 create table if not exists ads_dish_category_1day(
     `pay_date` date comment '支付日期',
@@ -40,6 +49,7 @@ where pay_date = date_add('2016-09-01', -1);
 
 
 -- ads_dish_category 历史累积品类指标
+-- 统计每个菜品类别的历史累积订单量、销量和销售额
 drop table if exists ads_dish_category;
 create table if not exists ads_dish_categroy(
     `dish_category` varchar(64) comment '品类',
@@ -77,6 +87,7 @@ where pay_date = date_add('2016-09-01', -1);
 
 
 -- ads_city_1day 每日城市的统计指标
+-- 按天统计每个城市的订单量、销量和销售额
 drop table if exists ads_city_1day;
 create table if not exists ads_city_1day(
     `pay_date` date comment '支付日期',
@@ -117,6 +128,7 @@ where pay_date = date_add('2016-09-01', -1);
 
 
 -- ads_city 历史累积城市的统计指标
+-- 统计每个城市的历史累积订单量、销量和销售额。
 drop table if exists ads_city;
 create table if not exists ads_city(
     `shop_location` varchar(10) comment '店铺所在地',

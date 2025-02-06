@@ -1,3 +1,7 @@
+-- 在Doris数据库中创建订单信息、订单明细、菜品信息和会员信息的表，并提供了通过curl命令加载数据的示例
+-- 对于原始业务数据，存储ODS层中，采用Doris的duplicate数据表模型，进行设计
+-- 构建数据仓库的 ODS 层
+
 # create database private_station;
 
 -- ods_order_info 订单信息表

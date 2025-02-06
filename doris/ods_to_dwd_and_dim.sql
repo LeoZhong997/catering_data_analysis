@@ -1,3 +1,13 @@
+-- 将原始业务数据（存储在 ODS 层）经过清洗、转换后加载到更高层次的数据模型（如维度表 DIM 和事实表 DWD），
+-- 以便支持后续的分析和报表生成。
+-- 构建数据仓库的 DIM和DWD 层
+--  1. 创建维度表（dim_member_info 和 dim_dish_info）。
+--  2. 创建事实表（dwd_order_detail）。
+--  3. 从 ODS 层加载数据到维度表和事实表。
+--  4. 提供首日装载和每日增量装载的 SQL 语句。
+--  5. 支持后续的统计分析需求。
+
+-- 创建维度表
 -- dim_member_info 会员维度表
 drop table if exists dim_member_info;
 create table if not exists dim_member_info(
@@ -18,7 +28,7 @@ properties(
 );
 
 
--- 为dim_member_info创建bitmap的索引
+-- 为dim_member_info创建bitmap的索引，以加速查询性能
 create index if not exists membership_level_idx on dim_member_info (membership_level) using bitmap comment '会员等级字段索引';
 
 -- dim_dish_info 菜品维度表
@@ -45,6 +55,7 @@ properties(
 create index if not exists dish_category_idx on dim_dish_info (dish_category) using bitmap comment '菜品类别列索引';
 drop index if exists dish_category_idx on dim_dish_info;
 
+-- 从 ODS 层加载数据到维度表
 -- ods to dim_member_info
 insert into private_station.dim_member_info
 select
@@ -68,11 +79,12 @@ select
     price,
     cost,
     recommendation_level,
-    -- '[[:space:]]+$' 去除字符串末尾任何空格字符
+    -- '[[:space:]]+$' 使用 regexp_replace 去除字符串末尾任何空格字符
     regexp_replace(dish_category, '[[:space:]]+$', '')
 from private_station.ods_dish_info;
 
 
+-- 创建事实表 (Fact Table)
 -- dwd_order_detail 下单明细事实表
 drop table if exists dwd_order_detail;
 create table if not exists dwd_order_detail(
@@ -100,8 +112,13 @@ create index if not exists shop_name_idx on dwd_order_detail (shop_name) using b
 create index if not exists shop_location_idx on dwd_order_detail (shop_location) using bitmap comment '店铺所在地列索引';
 
 
+-- 从 ODS 层加载数据到事实表
 -- ods to dwd_order_detail
 -- 首日装载
+-- 将原始订单数据（ods_order_info 和 ods_order_detail）与会员数据（ods_member_info）
+-- 和菜品数据（ods_dish_info）关联后，加载到下单明细事实表（dwd_order_detail）
+--  使用 if 函数对 order_id 进行格式化处理
+--  通过多表关联（INNER JOIN）确保数据完整性
 insert into private_station.dwd_order_detail
 select
     order_info.order_id,
@@ -155,6 +172,7 @@ on order_detail.dish_name = dish_info.dish_name;
 
 
 -- 每日装载
+-- 通过 WHERE 条件筛选出指定日期范围内的数据（例如前一天的数据）
 # insert into private_station.dwd_order_detail
 select
     order_info.order_id,
@@ -211,6 +229,8 @@ on order_detail.dish_name = dish_info.dish_name;
 
 
 -- 统计指标需求分析
+-- 通过连接事实表（dwd_order_detail）和维度表（dim_dish_info、dim_member_info），
+-- 生成包含订单、菜品和会员信息的综合视图，用于统计分析。
 select
     order_id,
     order_detail.member_id,
