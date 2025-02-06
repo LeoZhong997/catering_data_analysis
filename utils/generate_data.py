@@ -50,12 +50,40 @@ def generate_test_data(num_records=100):
     # 生成订单信息表数据
     # 每个订单关联一个随机的会员，随机的shop_name和shop_location，随机的order_time、consumption_amount、is_paid和payment_time。
     orders = []
+    order_time = random_date(datetime(2024, 1, 1), datetime(2024, 6, 1))
+    # 同时生成订单明细表数据
+    # 每个订单包含1到5个菜品，每个菜品是随机选择的，有随机的quantity，detail_date和detail_time与订单的时间一致。
+    order_details = []
     for order_id in range(1, num_records + 1):
         member = random.choice(members)
         shop_name = f"Shop{random.randint(1, 10)}"
         shop_location = f"Location{random.randint(1, 5)}"
-        order_time = random_date(datetime(2023, 1, 1), datetime.now())
-        consumption_amount = round(random.uniform(50, 500), 2)
+        # order_time = random_date(datetime(2023, 1, 1), datetime.now())
+        # 确保订单时间是递增的
+        order_time += timedelta(minutes=random.randint(10, 60), hours=random.randint(1, 12), 
+                                days=random.randint(1, 3))
+        order_time_str = order_time.strftime("%Y-%m-%d %H:%M:%S")
+
+        # consumption_amount = round(random.uniform(50, 500), 2)
+        # 订单明细
+        consumption_amount = 0
+        num_dishes = random.randint(1, 5)
+        for _ in range(num_dishes):
+            dish = random.choice(dishes)
+            quantity = random.randint(1, 3)
+            detail_date = order_time_str.split(" ")[0]
+            detail_time = order_time_str.split(" ")[1]
+            order_details.append({
+                "order_id": order_id,
+                "dish_name": dish["dish_name"],
+                "price": dish["price"],
+                "quantity": quantity,
+                "detail_date": detail_date,
+                "detail_time": detail_time
+            })
+            consumption_amount += quantity * dish["price"]
+        consumption_amount = round(consumption_amount, 2)
+
         is_paid = random.choice([0, 1])
         payment_time = order_time + timedelta(hours=random.randint(0, 24)) if is_paid else None
         orders.append({
@@ -63,30 +91,11 @@ def generate_test_data(num_records=100):
             "member_name": member["member_name"],
             "shop_name": shop_name,
             "shop_location": shop_location,
-            "order_time": order_time.strftime("%Y-%m-%d %H:%M:%S"),
+            "order_time": order_time_str,
             "consumption_amount": consumption_amount,
             "is_paid": is_paid,
             "payment_time": payment_time.strftime("%Y-%m-%d %H:%M:%S") if payment_time else None
         })
-    
-    # 生成订单明细表数据
-    # 每个订单包含1到5个菜品，每个菜品是随机选择的，有随机的quantity，detail_date和detail_time与订单的时间一致。
-    order_details = []
-    for order in orders:
-        num_dishes = random.randint(1, 5)
-        for _ in range(num_dishes):
-            dish = random.choice(dishes)
-            quantity = random.randint(1, 3)
-            detail_date = order["order_time"].split(" ")[0]
-            detail_time = order["order_time"].split(" ")[1]
-            order_details.append({
-                "order_id": order["order_id"],
-                "dish_name": dish["dish_name"],
-                "price": dish["price"],
-                "quantity": quantity,
-                "detail_date": detail_date,
-                "detail_time": detail_time
-            })
     
     # 保存为CSV文件
     save_dir = '../data'
