@@ -1,0 +1,51 @@
+dish_id,dish_name,flavor,price,cost,recommendation_level,dish_category
+1,Dish1,Salty,58.26,34.96,1.6,Beverage
+2,Dish2,Salty,91.86,55.12,4.4,Main Course
+3,Dish3,Sweet,28.68,17.21,1.2,Beverage
+4,Dish4,Salty,39.2,23.52,3.7,Appetizer
+5,Dish5,Sweet,13.83,8.3,4.9,Dessert
+6,Dish6,Sour,78.51,47.11,4.0,Dessert
+7,Dish7,Spicy,93.7,56.22,1.7,Beverage
+8,Dish8,Sour,28.11,16.87,4.2,Dessert
+9,Dish9,Sour,92.0,55.2,1.8,Main Course
+10,Dish10,Spicy,86.81,52.09,4.8,Dessert
+11,Dish11,Sweet,97.12,58.27,3.3,Main Course
+12,Dish12,Salty,82.22,49.33,3.5,Appetizer
+13,Dish13,Sweet,17.6,10.56,4.3,Main Course
+14,Dish14,Spicy,24.57,14.74,4.8,Dessert
+15,Dish15,Spicy,33.75,20.25,4.4,Dessert
+16,Dish16,Sweet,36.88,22.13,1.1,Dessert
+17,Dish17,Sour,62.45,37.47,4.8,Beverage
+18,Dish18,Sweet,64.93,38.96,2.5,Appetizer
+19,Dish19,Spicy,25.27,15.16,4.0,Beverage
+20,Dish20,Spicy,71.95,43.17,3.3,Dessert
+21,Dish21,Spicy,23.31,13.99,1.2,Main Course
+22,Dish22,Salty,81.05,48.63,1.0,Appetizer
+23,Dish23,Sour,84.94,50.96,4.8,Main Course
+24,Dish24,Sour,38.8,23.28,1.2,Main Course
+25,Dish25,Spicy,22.2,13.32,2.1,Dessert
+26,Dish26,Sour,86.18,51.71,1.6,Beverage
+27,Dish27,Sweet,47.87,28.72,1.3,Appetizer
+28,Dish28,Spicy,66.89,40.13,3.4,Beverage
+29,Dish29,Spicy,15.71,9.43,4.0,Dessert
+30,Dish30,Spicy,49.85,29.91,1.9,Main Course
+31,Dish31,Spicy,25.55,15.33,3.4,Beverage
+32,Dish32,Sour,62.57,37.54,3.9,Main Course
+33,Dish33,Sour,12.52,7.51,4.0,Appetizer
+34,Dish34,Spicy,14.5,8.7,2.2,Beverage
+35,Dish35,Spicy,55.16,33.1,4.3,Appetizer
+36,Dish36,Sour,71.8,43.08,4.7,Appetizer
+37,Dish37,Spicy,30.04,18.02,4.0,Main Course
+38,Dish38,Salty,21.56,12.94,3.1,Beverage
+39,Dish39,Sweet,48.55,29.13,4.3,Dessert
+40,Dish40,Sweet,69.62,41.77,2.2,Main Course
+41,Dish41,Sour,74.26,44.56,1.4,Dessert
+42,Dish42,Salty,12.0,7.2,4.1,Beverage
+43,Dish43,Sweet,98.16,58.9,1.7,Beverage
+44,Dish44,Sweet,57.7,34.62,1.6,Main Course
+45,Dish45,Sour,41.28,24.77,3.1,Dessert
+46,Dish46,Salty,50.09,30.05,3.5,Main Course
+47,Dish47,Salty,72.17,43.3,3.0,Appetizer
+48,Dish48,Salty,56.27,33.76,2.9,Main Course
+49,Dish49,Salty,40.59,24.35,4.8,Main Course
+50,Dish50,Sweet,51.4,30.84,3.5,Dessert
