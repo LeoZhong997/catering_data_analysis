@@ -32,7 +32,7 @@ def generate_test_data(num_records=100):
     members = []
     for member_id in range(1, 101):
         member_name = f"Member{member_id}"
-        gender = random.choice(["Male", "Female", "Other"])
+        gender = random.choice(["男", "女"])
         age = random.randint(18, 60)
         member_join_date = random_date(datetime(2020, 1, 1), datetime.now())
         phone_number = random.randint(10000000000, 99999999999)
@@ -98,34 +98,41 @@ def generate_test_data(num_records=100):
         })
     
     # 保存为CSV文件
+    # output_table = ["菜品信息表", "会员信息表", "订单信息表", "订单详情表"]
+    output_table = ["会员信息表"]
     save_dir = '../data'
-    with open(f'{save_dir}/菜品信息表.csv', 'w', newline='') as f:
-        fieldnames = ["dish_id", "dish_name", "flavor", "price", "cost", "recommendation_level", "dish_category"]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        for dish in dishes:
-            writer.writerow(dish)
+    if "菜品信息表" in output_table:
+        with open(f'{save_dir}/菜品信息表.csv', 'w', newline='') as f:
+            fieldnames = ["dish_id", "dish_name", "flavor", "price", "cost", "recommendation_level", "dish_category"]
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            # writer.writeheader()
+            for dish in dishes:
+                writer.writerow(dish)
     
-    with open(f'{save_dir}/会员信息表.csv', 'w', newline='') as f:
-        fieldnames = ["member_id", "member_name", "gender", "age", "member_join_date", "phone_number", "membership_level"]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        for member in members:
-            writer.writerow(member)
+    if "会员信息表" in output_table:
+        with open(f'{save_dir}/会员信息表.csv', 'w', newline='') as f:
+            fieldnames = ["member_id", "member_name", "gender", "age", "member_join_date", "phone_number", "membership_level"]
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            # writer.writeheader()
+            for member in members:
+                writer.writerow(member)
     
-    with open(f'{save_dir}/订单信息表.csv', 'w', newline='') as f:
-        fieldnames = ["order_id", "member_name", "shop_name", "shop_location", "order_time", "consumption_amount", "is_paid", "payment_time"]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        for order in orders:
-            writer.writerow(order)
     
-    with open(f'{save_dir}/订单详情表.csv', 'w', newline='') as f:
-        fieldnames = ["order_id", "dish_name", "price", "quantity", "detail_date", "detail_time"]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        for detail in order_details:
-            writer.writerow(detail)
+    if "订单信息表" in output_table:
+        with open(f'{save_dir}/订单信息表.csv', 'w', newline='') as f:
+            fieldnames = ["order_id", "member_name", "shop_name", "shop_location", "order_time", "consumption_amount", "is_paid", "payment_time"]
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            # writer.writeheader()
+            for order in orders:
+                writer.writerow(order)
+    
+    if "订单详情表" in output_table:
+        with open(f'{save_dir}/订单详情表.csv', 'w', newline='') as f:
+            fieldnames = ["order_id", "dish_name", "price", "quantity", "detail_date", "detail_time"]
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            # writer.writeheader()
+            for detail in order_details:
+                writer.writerow(detail)
 
 if __name__ == "__main__":
     generate_test_data(100)

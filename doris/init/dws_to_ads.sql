@@ -37,15 +37,15 @@ group by pay_date, dish_category
 order by pay_date, dish_category;
 
 -- 每日装载
-# insert into ads_dish_category_1day
-select
-    pay_date,
-    dish_category,
-    order_count,
-    slaves_volume,
-    total_sales
-from dws_member_dish_stat
-where pay_date = date_add('2016-09-01', -1);
+-- # insert into ads_dish_category_1day
+-- select
+--     pay_date,
+--     dish_category,
+--     order_count,
+--     slaves_volume,
+--     total_sales
+-- from dws_member_dish_stat
+-- where pay_date = date_add('2016-09-01', -1);
 
 
 -- ads_dish_category 历史累积品类指标
@@ -75,14 +75,14 @@ select
 from ads_dish_category_1day;
 
 -- 每日装载
-# insert into ads_dish_categroy
-select
-    dish_category,
-    order_count,
-    slaves_volume,
-    total_sales
-from ads_dish_category_1day
-where pay_date = date_add('2016-09-01', -1);
+-- # insert into ads_dish_categroy
+-- select
+--     dish_category,
+--     order_count,
+--     slaves_volume,
+--     total_sales
+-- from ads_dish_category_1day
+-- where pay_date = date_add('2016-09-01', -1);
 
 
 
@@ -116,15 +116,15 @@ select
 from dws_shop_city_stat;
 
 -- 每日转载
-# insert into ads_city_1day
-select
-    pay_date,
-    shop_location,
-    order_count,
-    slaves_volume,
-    total_sales
-from dws_shop_city_stat
-where pay_date = date_add('2016-09-01', -1);
+-- # insert into ads_city_1day
+-- select
+--     pay_date,
+--     shop_location,
+--     order_count,
+--     slaves_volume,
+--     total_sales
+-- from dws_shop_city_stat
+-- where pay_date = date_add('2016-09-01', -1);
 
 
 -- ads_city 历史累积城市的统计指标
@@ -154,14 +154,14 @@ select
 from ads_city_1day;
 
 -- 每日装载
-# insert into ads_city
-select
-    shop_location,
-    order_count,
-    slaves_volume,
-    total_sales
-from ads_city_1day
-where pay_date = date_add('2016-09-01', -1);
+-- # insert into ads_city
+-- select
+--     shop_location,
+--     order_count,
+--     slaves_volume,
+--     total_sales
+-- from ads_city_1day
+-- where pay_date = date_add('2016-09-01', -1);
 
 
 -- ads_shop_1day 每日店铺的统计指标
@@ -193,15 +193,15 @@ select
 from dws_shop_city_stat;
 
 -- 每日装载
-# insert into ads_shop_1day
-select
-    pay_date,
-    shop_name,
-    order_count,
-    slaves_volume,
-    total_sales
-from dws_shop_city_stat
-where pay_date = date_add('2016-09-01', -1);
+-- # insert into ads_shop_1day
+-- select
+--     pay_date,
+--     shop_name,
+--     order_count,
+--     slaves_volume,
+--     total_sales
+-- from dws_shop_city_stat
+-- where pay_date = date_add('2016-09-01', -1);
 
 -- ads_shop 历史累积店铺的统计指标
 drop table if exists ads_shop;
@@ -229,14 +229,14 @@ select
 from ads_shop_1day;
 
 -- 每日装载
-# insert into ads_shop
-select
-    shop_name,
-    order_count,
-    slaves_volume,
-    total_sales
-from ads_shop_1day
-where pay_date = date_add('2016-09-01', -1);
+-- # insert into ads_shop
+-- select
+--     shop_name,
+--     order_count,
+--     slaves_volume,
+--     total_sales
+-- from ads_shop_1day
+-- where pay_date = date_add('2016-09-01', -1);
 
 -- 月季各城市盈利额与各城市盈利总额平均值对比
 drop table if exists ads_city_month;
@@ -270,18 +270,18 @@ group by date_format(pay_date, '%Y-%m'),shop_location;
 
 
 -- 每日装载
-# insert into ads_city_month
-select
-    date_format(pay_date, '%Y-%m'),
-    shop_location,
-    order_count,
-    slaves_volume,
-    total_sales,
-    order_count * 0.3 + slaves_volume * 0.2 + total_sales * 0.5 score,
-    58000
-from ads_city_1day
--- 每日新增的数据
-where pay_date = date_add('2016-09-01', -1);
+-- # insert into ads_city_month
+-- select
+--     date_format(pay_date, '%Y-%m'),
+--     shop_location,
+--     order_count,
+--     slaves_volume,
+--     total_sales,
+--     order_count * 0.3 + slaves_volume * 0.2 + total_sales * 0.5 score,
+--     58000
+-- from ads_city_1day
+-- -- 每日新增的数据
+-- where pay_date = date_add('2016-09-01', -1);
 
 
 
@@ -318,20 +318,20 @@ group by date_month, shop_name;
 
 
 -- 每日转载
-# insert into ads_shop_month
-select
-    date_format(pay_date, '%Y-%m') date_month,
-    shop_name,
-    order_count,
-    slaves_volume,
-    total_sales,
-    order_count * 0.3 + slaves_volume * 0.2 + total_sales * 0.5 score,
-    25798
-from dws_shop_city_stat
-where pay_date = date_add('2016-09-01', -1);
+-- # insert into ads_shop_month
+-- select
+--     date_format(pay_date, '%Y-%m') date_month,
+--     shop_name,
+--     order_count,
+--     slaves_volume,
+--     total_sales,
+--     order_count * 0.3 + slaves_volume * 0.2 + total_sales * 0.5 score,
+--     25798
+-- from dws_shop_city_stat
+-- where pay_date = date_add('2016-09-01', -1);
 
 
--- 历史各会消费的统计指标
+-- 历史各会员消费的统计指标
 drop table if exists ads_member;
 create table if not exists ads_member(
     `member_id` bigint comment '会员id',
@@ -341,7 +341,7 @@ create table if not exists ads_member(
     `total_sales` decimal(16, 2) sum default '0' comment '销售额'
 )
 aggregate key(`member_id`, `member_name`)
-distributed by key(`member_id`) buckets 1
+distributed by hash(`member_id`) buckets 1
 properties(
     "replication_num" = "1",
     "bloom_filter_columns" = "member_id, member_name"
@@ -361,15 +361,15 @@ group by member_id, member_name;
 
 
 -- 每日装载
-# insert into ads_member
-select
-    member_id,
-    member_name,
-    order_count,
-    slaves_volume,
-    total_sales
-from dws_member_dish_stat
-where pay_date = date_add('2016-09-01', -1);
+-- # insert into ads_member
+-- select
+--     member_id,
+--     member_name,
+--     order_count,
+--     slaves_volume,
+--     total_sales
+-- from dws_member_dish_stat
+-- where pay_date = date_add('2016-09-01', -1);
 
 
 -- 历史至今各会员对品类消费情况
@@ -405,16 +405,16 @@ group by member_id, member_name, dish_category;
 
 
 -- 每日数据装载
-# insert into ads_member_dish_category
-select
-    member_id,
-    member_name,
-    dish_category,
-    order_count,
-    slaves_volume,
-    total_sales
-from dws_member_dish_stat
-where pay_date = date_add('2016-09-01', -1);
+-- # insert into ads_member_dish_category
+-- select
+--     member_id,
+--     member_name,
+--     dish_category,
+--     order_count,
+--     slaves_volume,
+--     total_sales
+-- from dws_member_dish_stat
+-- where pay_date = date_add('2016-09-01', -1);
 
 
 
@@ -450,16 +450,16 @@ group by pay_date, dish_id, dish_name;
 
 
 -- 每日装载
-# insert into ads_member_dish_category_1day
-select
-    pay_date,
-    dish_id,
-    dish_name,
-    order_count,
-    slaves_volume,
-    total_sales
-from dws_dish_stat
-where pay_date = date_add('2016-09-01', -1);
+-- # insert into ads_member_dish_category_1day
+-- select
+--     pay_date,
+--     dish_id,
+--     dish_name,
+--     order_count,
+--     slaves_volume,
+--     total_sales
+-- from dws_dish_stat
+-- where pay_date = date_add('2016-09-01', -1);
 
 
 
@@ -495,16 +495,16 @@ group by month_date, dish_id, dish_name;
 
 
 -- 每日装载
-# insert into ads_dish_name_month
-select
-    date_format(pay_date, '%Y-%m') month_date,
-    dish_id,
-    dish_name,
-    order_count,
-    slaves_volume,
-    total_sales
-from ads_dish_name_1day
-where pay_date = date_add('2016-09-01', -1);
+-- # insert into ads_dish_name_month
+-- select
+--     date_format(pay_date, '%Y-%m') month_date,
+--     dish_id,
+--     dish_name,
+--     order_count,
+--     slaves_volume,
+--     total_sales
+-- from ads_dish_name_1day
+-- where pay_date = date_add('2016-09-01', -1);
 
 
 -- 历史各菜品销售情况的统计指标
@@ -536,15 +536,15 @@ group by dish_id, dish_name;
 
 
 -- 每日装载
-# insert into ads_dish_name
-select
-    dish_id,
-    dish_name,
-    order_count,
-    slaves_volume,
-    total_sales
-from ads_dish_name_1day
-where pay_date = date_add('2016-01-09', -1);
+-- # insert into ads_dish_name
+-- select
+--     dish_id,
+--     dish_name,
+--     order_count,
+--     slaves_volume,
+--     total_sales
+-- from ads_dish_name_1day
+-- where pay_date = date_add('2016-01-09', -1);
 
 
 
@@ -577,15 +577,15 @@ group by pay_date, flavor;
 
 
 -- 每日装载
-# insert into ads_flavor_1day
-select
-    pay_date,
-    flavor,
-    order_count,
-    slaves_volume,
-    total_sales
-from dws_dish_stat
-where pay_date = date_add('2016-09-01', -1)
+-- # insert into ads_flavor_1day
+-- select
+--     pay_date,
+--     flavor,
+--     order_count,
+--     slaves_volume,
+--     total_sales
+-- from dws_dish_stat
+-- where pay_date = date_add('2016-09-01', -1)
 
 
 
@@ -619,16 +619,16 @@ group by date_format(pay_date, '%Y-%m'), flavor;
 
 
 -- 每日装载
-# insert into ads_flavor_month
-select
-    date_format(pay_date, '%Y-%m') month_date,
-    flavor,
-    order_count,
-    slaves_volume,
-    total_sales
-from ads_flavor_1day
--- 每日增量数据
-where pay_date = date_add('2016-09-01', -1);
+-- # insert into ads_flavor_month
+-- select
+--     date_format(pay_date, '%Y-%m') month_date,
+--     flavor,
+--     order_count,
+--     slaves_volume,
+--     total_sales
+-- from ads_flavor_1day
+-- -- 每日增量数据
+-- where pay_date = date_add('2016-09-01', -1);
 
 
 
@@ -659,14 +659,14 @@ group by flavor;
 
 
 -- 每日装载
-# insert into ads_flavor
-select
-    flavor,
-    order_count,
-    slaves_volume,
-    total_sales
-from ads_flavor_1day
-where pay_date = date_add('2016-09-01', -1);
+-- # insert into ads_flavor
+-- select
+--     flavor,
+--     order_count,
+--     slaves_volume,
+--     total_sales
+-- from ads_flavor_1day
+-- where pay_date = date_add('2016-09-01', -1);
 
 
 
@@ -717,47 +717,47 @@ from (
 
 
 -- 每日装载
-# insert into ads_dish_category_name_month
-select
-    date_month,
-    dish_category,
-    dish_name,
-    total_sales,
-    total_sales_sum,
-    round((total_sales/total_sales_sum) * 100, 2)
-from (
-    select
-        date_month,
-        dish_category,
-        dish_name,
-        total_sales,
-        sum(total_sales) over(partition by dish_category) total_sales_sum
-    from (
-        select
-            date_month,
-            dish_category,
-            dish_name,
-            sum(total_sales) total_sales
-        from (
-            -- 当月的数据
-            select
-                date_month,
-                dish_category,
-                dish_name,
-                total_sales
-            from ads_dish_category_name_month
-            where date_month = date_format('2016-08-30', '%Y-%m')
-            union
-            -- 当日新增数据
-            select
-                date_format(pay_date, '%Y-%m') date_month,
-                dish_category,
-                dish_name,
-                sum(total_sales) total_sales
-            from dws_dish_stat
-            where pay_date = date_add('2016-09-01', -1)
-            group by date_format(pay_date, '%Y-%m'), dish_category, dish_name
-        ) tb1
-        group by date_month, dish_category, dish_name
-    ) tb2
-) tb3;
+-- # insert into ads_dish_category_name_month
+-- select
+--     date_month,
+--     dish_category,
+--     dish_name,
+--     total_sales,
+--     total_sales_sum,
+--     round((total_sales/total_sales_sum) * 100, 2)
+-- from (
+--     select
+--         date_month,
+--         dish_category,
+--         dish_name,
+--         total_sales,
+--         sum(total_sales) over(partition by dish_category) total_sales_sum
+--     from (
+--         select
+--             date_month,
+--             dish_category,
+--             dish_name,
+--             sum(total_sales) total_sales
+--         from (
+--             -- 当月的数据
+--             select
+--                 date_month,
+--                 dish_category,
+--                 dish_name,
+--                 total_sales
+--             from ads_dish_category_name_month
+--             where date_month = date_format('2016-08-30', '%Y-%m')
+--             union
+--             -- 当日新增数据
+--             select
+--                 date_format(pay_date, '%Y-%m') date_month,
+--                 dish_category,
+--                 dish_name,
+--                 sum(total_sales) total_sales
+--             from dws_dish_stat
+--             where pay_date = date_add('2016-09-01', -1)
+--             group by date_format(pay_date, '%Y-%m'), dish_category, dish_name
+--         ) tb1
+--         group by date_month, dish_category, dish_name
+--     ) tb2
+-- ) tb3;

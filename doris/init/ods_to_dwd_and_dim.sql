@@ -46,7 +46,7 @@ unique key(`dish_id`)
 distributed by hash(`dish_id`) buckets 1
 properties(
     "replication_num" = "1",
-    "anable_unique_key_merge_on_write" = "true",
+    "enable_unique_key_merge_on_write" = "true",
     "bloom_filter_columns" = "dish_name"
 );
 
@@ -173,123 +173,124 @@ on order_detail.dish_name = dish_info.dish_name;
 
 -- 每日装载
 -- 通过 WHERE 条件筛选出指定日期范围内的数据（例如前一天的数据）
-# insert into private_station.dwd_order_detail
-select
-    order_info.order_id,
-    member_info.member_id,
-    dish_info.dish_id,
-    order_info.shop_name,
-    order_info.shop_location,
-    order_info.order_time,
-    order_info.payment_time,
-    order_info.is_paid,
-    order_info.consumption_amount,
-    order_detail.price,
-    order_detail.quantity
-from (
-    select
-        if(substr(order_id, 9, 1) = '0',
-           concat(substring(order_id, 1, 8), substring(order_id, 10)),
-           order_id) order_id,
-        member_name,
-        shop_name,
-        shop_location,
-        order_time,
-        consumption_amount,
-        is_paid,
-        payment_time
-    from private_station.ods_order_info
-    -- 索取当日时间
-    where date(payment_time) = date_add('2016-09-01', -1)
-) order_info
-inner join(
-    select
-        order_id,
-        dish_name,
-        price,
-        quantity
-    from private_station.ods_order_detail
-) order_detail
-on order_info.order_id = order_detail.order_id
-inner join(
-    select
-        member_id,
-        member_name
-    from private_station.ods_member_info
-) member_info
-on order_info.member_name = member_info.member_name
-inner join(
-    select
-        dish_id,
-        dish_name
-    from private_station.ods_dish_info
-) dish_info
-on order_detail.dish_name = dish_info.dish_name;
+-- insert into private_station.dwd_order_detail
+-- select
+--     order_info.order_id,
+--     member_info.member_id,
+--     dish_info.dish_id,
+--     order_info.shop_name,
+--     order_info.shop_location,
+--     order_info.order_time,
+--     order_info.payment_time,
+--     order_info.is_paid,
+--     order_info.consumption_amount,
+--     order_detail.price,
+--     order_detail.quantity
+-- from (
+--     select
+--         if(substr(order_id, 9, 1) = '0',
+--            concat(substring(order_id, 1, 8), substring(order_id, 10)),
+--            order_id) order_id,
+--         member_name,
+--         shop_name,
+--         shop_location,
+--         order_time,
+--         consumption_amount,
+--         is_paid,
+--         payment_time
+--     from private_station.ods_order_info
+--     -- 索取当日时间
+--     where date(payment_time) = date_add('2016-09-01', -1)
+-- ) order_info
+-- inner join(
+--     select
+--         order_id,
+--         dish_name,
+--         price,
+--         quantity
+--     from private_station.ods_order_detail
+-- ) order_detail
+-- on order_info.order_id = order_detail.order_id
+-- inner join(
+--     select
+--         member_id,
+--         member_name
+--     from private_station.ods_member_info
+-- ) member_info
+-- on order_info.member_name = member_info.member_name
+-- inner join(
+--     select
+--         dish_id,
+--         dish_name
+--     from private_station.ods_dish_info
+-- ) dish_info
+-- on order_detail.dish_name = dish_info.dish_name;
 
 
 
 -- 统计指标需求分析
 -- 通过连接事实表（dwd_order_detail）和维度表（dim_dish_info、dim_member_info），
 -- 生成包含订单、菜品和会员信息的综合视图，用于统计分析。
-select
-    order_id,
-    order_detail.member_id,
-    order_detail.dish_id,
-    shop_name,
-    shop_location,
-    order_time,
-    payment_time,
-    is_paid,
-    consumption_amount,
-    order_detail.price,
-    quantity,
-    dish_name,
-    flavor,
-    cost,
-    recommendation_level,
-    dish_category,
-    member_name,
-    gender,
-    age,
-    membership_join_date,
-    phone_number,
-    membership_level
-from (
-    select
-        order_id,
-        member_id,
-        dish_id,
-        shop_name,
-        shop_location,
-        order_time,
-        payment_time,
-        is_paid,
-        consumption_amount,
-        price,
-        quantity
-    from dwd_order_detail
-) order_detail
-left join (
-    select
-        dish_id,
-        dish_name,
-        flavor,
-        price,
-        cost,
-        recommendation_level,
-        dish_category
-    from dim_dish_info
-) dish_info
-on order_detail.dish_id = dish_info.dish_id
-left join (
-    select
-        member_id,
-        member_name,
-        gender,
-        age,
-        membership_join_date,
-        phone_number,
-        membership_level
-    from dim_member_info
-) member_info
-on order_detail.member_id = member_info.member_id;
+-- 查询语句，没有创建表
+-- select
+--     order_id,
+--     order_detail.member_id,
+--     order_detail.dish_id,
+--     shop_name,
+--     shop_location,
+--     order_time,
+--     payment_time,
+--     is_paid,
+--     consumption_amount,
+--     order_detail.price,
+--     quantity,
+--     dish_name,
+--     flavor,
+--     cost,
+--     recommendation_level,
+--     dish_category,
+--     member_name,
+--     gender,
+--     age,
+--     membership_join_date,
+--     phone_number,
+--     membership_level
+-- from (
+--     select
+--         order_id,
+--         member_id,
+--         dish_id,
+--         shop_name,
+--         shop_location,
+--         order_time,
+--         payment_time,
+--         is_paid,
+--         consumption_amount,
+--         price,
+--         quantity
+--     from dwd_order_detail
+-- ) order_detail
+-- left join (
+--     select
+--         dish_id,
+--         dish_name,
+--         flavor,
+--         price,
+--         cost,
+--         recommendation_level,
+--         dish_category
+--     from dim_dish_info
+-- ) dish_info
+-- on order_detail.dish_id = dish_info.dish_id
+-- left join (
+--     select
+--         member_id,
+--         member_name,
+--         gender,
+--         age,
+--         membership_join_date,
+--         phone_number,
+--         membership_level
+--     from dim_member_info
+-- ) member_info
+-- on order_detail.member_id = member_info.member_id;

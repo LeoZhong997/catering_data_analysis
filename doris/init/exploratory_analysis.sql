@@ -1,132 +1,132 @@
-# 不用了 eliminate(淘汰)
-# drop table if exists data_analy_member_flavor_pre;
-# create table if not exists data_analy_member_flavor_pre(
-#     `member_id` bigint comment '会员id',
-#     `member_name` varchar(10) comment '会员名',
-#     `flavor` varchar(10) comment '口味',
-#     `rn` int comment '排名'
-# )
-# duplicate key(`member_id`, `member_name`, `flavor`)
-# distributed by hash(`member_id`) buckets 1
-# properties(
-#     "replication_num" = "1"
-# );
-#
-#
-#
-#
-# insert into data_analy_member_flavor_pre
-# select
-#     member_id,
-#     member_name,
-#     flavor,
-#     rn
-# from (
-#     select
-#         member_id,
-#         member_name,
-#         flavor,
-#         ct,
-#         row_number() over (partition by member_name order by ct desc) rn
-#     from (
-#         select
-#             member_id,
-#             member_name,
-#             flavor,
-#             sum(quantity) ct
-#         from (
-#             select
-#                 order_detail.member_id,
-#                 member_info.member_name,
-#                 order_detail.dish_id,
-#                 dish_info.dish_category,
-#                 dish_info.flavor,
-#                 quantity,
-#                 total_sales
-#             from (
-#                 select
-#                     member_id,
-#                     dish_id,
-#                     quantity,
-#                     price * quantity total_sales
-#                 from dwd_order_detail
-#             ) order_detail
-#             join (
-#                 select
-#                     dish_id,
-#                     dish_category,
-#                     flavor
-#                 from dim_dish_info
-#             ) dish_info
-#             on order_detail.dish_id = dish_info.dish_id
-#             join (
-#                 select
-#                     member_id,
-#                     member_name
-#                 from dim_member_info
-#             ) member_info
-#             on order_detail.member_id = member_info.member_id
-#         ) tb1
-#         group by member_id, member_name, flavor
-#     ) tb2
-# ) tb3
-# where rn <= 3;
-#
-#
-#
-# select
-#     member_id,
-#     member_name,
-#     dish_category,
-#     ct
-# from (
-#     select
-#         member_id,
-#         member_name,
-#         dish_category,
-#         ct,
-#         row_number() over (partition by member_name order by ct desc) rn
-#     from (
-#         select
-#             member_id,
-#             member_name,
-#             dish_category,
-#             sum(quantity) ct
-#         from (
-#             select
-#                 order_detail.member_id,
-#                 member_info.member_name,
-#                 order_detail.dish_id,
-#                 dish_info.dish_category,
-#                 quantity,
-#                 total_sales
-#             from (
-#                 select
-#                     member_id,
-#                     dish_id,
-#                     quantity,
-#                     price * quantity total_sales
-#                 from dwd_order_detail
-#             ) order_detail
-#             join (
-#                 select
-#                     dish_id,
-#                     dish_category
-#                 from dim_dish_info
-#             ) dish_info
-#             on order_detail.dish_id = dish_info.dish_id
-#             join (
-#                 select
-#                     member_id,
-#                     member_name
-#                 from dim_member_info
-#             ) member_info
-#             on order_detail.member_id = member_info.member_id
-#         ) tb1
-#         group by member_id, member_name, dish_category
-#     ) tb2
-# ) tb3
-# where rn <= 3;
+-- # 不用了 eliminate(淘汰)
+-- # drop table if exists data_analy_member_flavor_pre;
+-- # create table if not exists data_analy_member_flavor_pre(
+-- #     `member_id` bigint comment '会员id',
+-- #     `member_name` varchar(10) comment '会员名',
+-- #     `flavor` varchar(10) comment '口味',
+-- #     `rn` int comment '排名'
+-- # )
+-- # duplicate key(`member_id`, `member_name`, `flavor`)
+-- # distributed by hash(`member_id`) buckets 1
+-- # properties(
+-- #     "replication_num" = "1"
+-- # );
+-- #
+-- #
+-- #
+-- #
+-- # insert into data_analy_member_flavor_pre
+-- # select
+-- #     member_id,
+-- #     member_name,
+-- #     flavor,
+-- #     rn
+-- # from (
+-- #     select
+-- #         member_id,
+-- #         member_name,
+-- #         flavor,
+-- #         ct,
+-- #         row_number() over (partition by member_name order by ct desc) rn
+-- #     from (
+-- #         select
+-- #             member_id,
+-- #             member_name,
+-- #             flavor,
+-- #             sum(quantity) ct
+-- #         from (
+-- #             select
+-- #                 order_detail.member_id,
+-- #                 member_info.member_name,
+-- #                 order_detail.dish_id,
+-- #                 dish_info.dish_category,
+-- #                 dish_info.flavor,
+-- #                 quantity,
+-- #                 total_sales
+-- #             from (
+-- #                 select
+-- #                     member_id,
+-- #                     dish_id,
+-- #                     quantity,
+-- #                     price * quantity total_sales
+-- #                 from dwd_order_detail
+-- #             ) order_detail
+-- #             join (
+-- #                 select
+-- #                     dish_id,
+-- #                     dish_category,
+-- #                     flavor
+-- #                 from dim_dish_info
+-- #             ) dish_info
+-- #             on order_detail.dish_id = dish_info.dish_id
+-- #             join (
+-- #                 select
+-- #                     member_id,
+-- #                     member_name
+-- #                 from dim_member_info
+-- #             ) member_info
+-- #             on order_detail.member_id = member_info.member_id
+-- #         ) tb1
+-- #         group by member_id, member_name, flavor
+-- #     ) tb2
+-- # ) tb3
+-- # where rn <= 3;
+-- #
+-- #
+-- #
+-- # select
+-- #     member_id,
+-- #     member_name,
+-- #     dish_category,
+-- #     ct
+-- # from (
+-- #     select
+-- #         member_id,
+-- #         member_name,
+-- #         dish_category,
+-- #         ct,
+-- #         row_number() over (partition by member_name order by ct desc) rn
+-- #     from (
+-- #         select
+-- #             member_id,
+-- #             member_name,
+-- #             dish_category,
+-- #             sum(quantity) ct
+-- #         from (
+-- #             select
+-- #                 order_detail.member_id,
+-- #                 member_info.member_name,
+-- #                 order_detail.dish_id,
+-- #                 dish_info.dish_category,
+-- #                 quantity,
+-- #                 total_sales
+-- #             from (
+-- #                 select
+-- #                     member_id,
+-- #                     dish_id,
+-- #                     quantity,
+-- #                     price * quantity total_sales
+-- #                 from dwd_order_detail
+-- #             ) order_detail
+-- #             join (
+-- #                 select
+-- #                     dish_id,
+-- #                     dish_category
+-- #                 from dim_dish_info
+-- #             ) dish_info
+-- #             on order_detail.dish_id = dish_info.dish_id
+-- #             join (
+-- #                 select
+-- #                     member_id,
+-- #                     member_name
+-- #                 from dim_member_info
+-- #             ) member_info
+-- #             on order_detail.member_id = member_info.member_id
+-- #         ) tb1
+-- #         group by member_id, member_name, dish_category
+-- #     ) tb2
+-- # ) tb3
+-- # where rn <= 3;
 
 
 select
@@ -134,9 +134,6 @@ select
     count(flavor)
 from dim_dish_info
 group by flavor;
-
-
-
 
 
 -- 酸：酸甜、酸、柠檬味
@@ -158,7 +155,6 @@ distributed by hash(`id`) buckets 1
 properties(
     "replication_num" = "1"
 );
-
 
 
 insert into flavor_dic (`id`, `base_flavor`, `composite_flavor`) values (1002, '酸', '酸');
@@ -194,7 +190,7 @@ create table if not exists data_analysis_member_flavor_pre(
     `member_id` bigint comment '会员id',
     `member_name` varchar(10) comment '会员名',
     `base_flavor` varchar(10) comment '基础口味',
-    `consumption_count` bigint comment '消防次数'
+    `consumption_count` bigint comment '消费次数'
 )
 duplicate key(`member_id`, `member_name`, `base_flavor`)
 distributed by hash(`member_id`) buckets 1
@@ -232,6 +228,7 @@ from (
                 member_name
             from dim_member_info
         ) member
+        -- 使用 cross join 将每个会员与每种复合口味进行笛卡尔积，确保每个会员都有所有可能的复合口味记录
         cross join (
             select
                 composite_flavor
@@ -543,48 +540,48 @@ from dim_dish_info
 group by dish_name;
 
 
-#     select
-#         member_id,
-#         member_name,
-#         dish_name,
-#         total_sales,
-#         count(dish_name) over(partition by member_id) sum_num
-#     from (
-#         select
-#             member_id,
-#             member_name,
-#             dish_name,
-#             sum(sales) total_sales
-#         from (
-#             select
-#                 order_detail.member_id,
-#                 member.member_name,
-#                 dish.dish_name,
-#                 order_detail.sales
-#             from (
-#                 select
-#                     member_id,
-#                     dish_id,
-#                     quantity * price as sales
-#                 from dwd_order_detail
-#             ) order_detail
-#             inner join (
-#                 select
-#                     member_id,
-#                     member_name
-#                 from dim_member_info
-#             ) member
-#             on order_detail.member_id = member.member_id
-#             inner join (
-#                 select
-#                     dish_id,
-#                     dish_name
-#                 from dim_dish_info
-#             ) dish
-#             on order_detail.dish_id = dish.dish_id
-#         ) tb1
-#         group by member_id, member_name, dish_name
-#     ) tb2
+-- #     select
+-- #         member_id,
+-- #         member_name,
+-- #         dish_name,
+-- #         total_sales,
+-- #         count(dish_name) over(partition by member_id) sum_num
+-- #     from (
+-- #         select
+-- #             member_id,
+-- #             member_name,
+-- #             dish_name,
+-- #             sum(sales) total_sales
+-- #         from (
+-- #             select
+-- #                 order_detail.member_id,
+-- #                 member.member_name,
+-- #                 dish.dish_name,
+-- #                 order_detail.sales
+-- #             from (
+-- #                 select
+-- #                     member_id,
+-- #                     dish_id,
+-- #                     quantity * price as sales
+-- #                 from dwd_order_detail
+-- #             ) order_detail
+-- #             inner join (
+-- #                 select
+-- #                     member_id,
+-- #                     member_name
+-- #                 from dim_member_info
+-- #             ) member
+-- #             on order_detail.member_id = member.member_id
+-- #             inner join (
+-- #                 select
+-- #                     dish_id,
+-- #                     dish_name
+-- #                 from dim_dish_info
+-- #             ) dish
+-- #             on order_detail.dish_id = dish.dish_id
+-- #         ) tb1
+-- #         group by member_id, member_name, dish_name
+-- #     ) tb2
 
 -- 时间序列销量数据
 drop table if exists da_date_series_amount_analysis;

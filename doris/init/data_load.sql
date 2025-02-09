@@ -2,7 +2,7 @@
 -- 对于原始业务数据，存储ODS层中，采用Doris的duplicate数据表模型，进行设计
 -- 构建数据仓库的 ODS 层
 
-# create database private_station;
+-- create database private_station;
 
 -- ods_order_info 订单信息表
 drop table if exists ods_order_info;
@@ -71,40 +71,40 @@ properties("replication_num" = "1");
 
 
 
-# -- 数据装载，采用stream_load方式
-# -- ods_order_info数据加载
-# curl --location-trusted -u root: \
-#     -H "Expect:100-continue" \
-#     -H "column_separator:," \
-#     -H "columns:order_id, member_name, shop_name, shop_location, order_time, consumption_amount, is_paid, payment_time" \
-#     -T 订单信息表.csv \
-#     -XPUT http://172.20.10.3:8070/api/private_station/ods_order_info/_stream_load
-#
-#
-# -- ods_order_detail数据加载
-# curl --location-trusted -u root: \
-#     -H "Expect:100-continue" \
-#     -H "column_separator:," \
-#     -H "columns:order_id, dish_name, price, quantity, detail_date, detail_time" \
-#     -T 订单详情表.csv \
-#     -XPUT http://172.20.10.3:8070/api/private_station/ods_order_detail/_stream_load
-#
-#
-#
-# -- ods_dish_info数据加载
-# curl --location-trusted -u root: \
-#     -H "Expect:100-continue" \
-#     -H "column_separator:," \
-#     -H "columns:dish_id, dish_name, flavor, price, cost, recommendation_level, dish_category" \
-#     -T 菜品信息表.csv \
-#     -XPUT http://172.20.10.3:8070/api/private_station/ods_dish_info/_stream_load
-#
-#
-#
-# -- ods_member_info
-# curl --location-trusted -u root: \
-#     -H "Expect:100-continue" \
-#     -H "column_separator:," \
-#     -H "columns:member_id, member_name, gender, age, member_join_date, phone_number, membership_level" \
-#     -T 会员信息表.csv\
-#     -XPUT http://172.20.10.3:8070/api/private_station/ods_member_info/_stream_load
+-- # -- 数据装载，采用stream_load方式
+-- # -- ods_order_info数据加载
+-- # curl --location-trusted -u root: \
+-- #     -H "Expect:100-continue" \
+-- #     -H "column_separator:," \
+-- #     -H "columns:order_id, member_name, shop_name, shop_location, order_time, consumption_amount, is_paid, payment_time" \
+-- #     -T 订单信息表.csv \
+-- #     -XPUT http://172.20.10.3:8070/api/private_station/ods_order_info/_stream_load
+-- #
+-- #
+-- # -- ods_order_detail数据加载
+-- # curl --location-trusted -u root: \
+-- #     -H "Expect:100-continue" \
+-- #     -H "column_separator:," \
+-- #     -H "columns:order_id, dish_name, price, quantity, detail_date, detail_time" \
+-- #     -T 订单详情表.csv \
+-- #     -XPUT http://172.20.10.3:8070/api/private_station/ods_order_detail/_stream_load
+-- #
+-- #
+-- #
+-- # -- ods_dish_info数据加载
+-- # curl --location-trusted -u root: \
+-- #     -H "Expect:100-continue" \
+-- #     -H "column_separator:," \
+-- #     -H "columns:dish_id, dish_name, flavor, price, cost, recommendation_level, dish_category" \
+-- #     -T 菜品信息表.csv \
+-- #     -XPUT http://172.20.10.3:8070/api/private_station/ods_dish_info/_stream_load
+-- #
+-- #
+-- #
+-- # -- ods_member_info
+-- # curl --location-trusted -u root: \
+-- #     -H "Expect:100-continue" \
+-- #     -H "column_separator:," \
+-- #     -H "columns:member_id, member_name, gender, age, member_join_date, phone_number, membership_level" \
+-- #     -T 会员信息表.csv\
+-- #     -XPUT http://172.20.10.3:8070/api/private_station/ods_member_info/_stream_load
