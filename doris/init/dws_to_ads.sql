@@ -22,7 +22,7 @@ properties(
     "replication_num" = "1"
 );
 
-create index dish_category_idx on ads_dish_category_1day (dish_category) using bitmap comment 'dish_category列bitmap索引';
+create index dish_category_1day_idx on ads_dish_category_1day (dish_category) using bitmap comment 'dish_category列bitmap索引';
 
 -- 首日装载
 insert into ads_dish_category_1day
@@ -51,7 +51,7 @@ order by pay_date, dish_category;
 -- ads_dish_category 历史累积品类指标
 -- 统计每个菜品类别的历史累积订单量、销量和销售额
 drop table if exists ads_dish_category;
-create table if not exists ads_dish_categroy(
+create table if not exists ads_dish_category(
     `dish_category` varchar(64) comment '品类',
     `order_count` int sum default '0' comment '订单量',
     `slaves_volume` int sum default '0' comment '销量',
@@ -63,10 +63,10 @@ properties(
     "replication_num" = "1"
 );
 
-create index dish_category_idx on ads_dish_categroy (dish_category) using bitmap comment 'dish_category列bitmap索引';
+create index dish_category_idx on ads_dish_category (dish_category) using bitmap comment 'dish_category列bitmap索引';
 
 -- 首日装载
-insert into ads_dish_categroy
+insert into ads_dish_category
 select
     dish_category,
     order_count,

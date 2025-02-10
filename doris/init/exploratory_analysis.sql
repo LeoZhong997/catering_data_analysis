@@ -1,133 +1,4 @@
--- # 不用了 eliminate(淘汰)
--- # drop table if exists data_analy_member_flavor_pre;
--- # create table if not exists data_analy_member_flavor_pre(
--- #     `member_id` bigint comment '会员id',
--- #     `member_name` varchar(10) comment '会员名',
--- #     `flavor` varchar(10) comment '口味',
--- #     `rn` int comment '排名'
--- # )
--- # duplicate key(`member_id`, `member_name`, `flavor`)
--- # distributed by hash(`member_id`) buckets 1
--- # properties(
--- #     "replication_num" = "1"
--- # );
--- #
--- #
--- #
--- #
--- # insert into data_analy_member_flavor_pre
--- # select
--- #     member_id,
--- #     member_name,
--- #     flavor,
--- #     rn
--- # from (
--- #     select
--- #         member_id,
--- #         member_name,
--- #         flavor,
--- #         ct,
--- #         row_number() over (partition by member_name order by ct desc) rn
--- #     from (
--- #         select
--- #             member_id,
--- #             member_name,
--- #             flavor,
--- #             sum(quantity) ct
--- #         from (
--- #             select
--- #                 order_detail.member_id,
--- #                 member_info.member_name,
--- #                 order_detail.dish_id,
--- #                 dish_info.dish_category,
--- #                 dish_info.flavor,
--- #                 quantity,
--- #                 total_sales
--- #             from (
--- #                 select
--- #                     member_id,
--- #                     dish_id,
--- #                     quantity,
--- #                     price * quantity total_sales
--- #                 from dwd_order_detail
--- #             ) order_detail
--- #             join (
--- #                 select
--- #                     dish_id,
--- #                     dish_category,
--- #                     flavor
--- #                 from dim_dish_info
--- #             ) dish_info
--- #             on order_detail.dish_id = dish_info.dish_id
--- #             join (
--- #                 select
--- #                     member_id,
--- #                     member_name
--- #                 from dim_member_info
--- #             ) member_info
--- #             on order_detail.member_id = member_info.member_id
--- #         ) tb1
--- #         group by member_id, member_name, flavor
--- #     ) tb2
--- # ) tb3
--- # where rn <= 3;
--- #
--- #
--- #
--- # select
--- #     member_id,
--- #     member_name,
--- #     dish_category,
--- #     ct
--- # from (
--- #     select
--- #         member_id,
--- #         member_name,
--- #         dish_category,
--- #         ct,
--- #         row_number() over (partition by member_name order by ct desc) rn
--- #     from (
--- #         select
--- #             member_id,
--- #             member_name,
--- #             dish_category,
--- #             sum(quantity) ct
--- #         from (
--- #             select
--- #                 order_detail.member_id,
--- #                 member_info.member_name,
--- #                 order_detail.dish_id,
--- #                 dish_info.dish_category,
--- #                 quantity,
--- #                 total_sales
--- #             from (
--- #                 select
--- #                     member_id,
--- #                     dish_id,
--- #                     quantity,
--- #                     price * quantity total_sales
--- #                 from dwd_order_detail
--- #             ) order_detail
--- #             join (
--- #                 select
--- #                     dish_id,
--- #                     dish_category
--- #                 from dim_dish_info
--- #             ) dish_info
--- #             on order_detail.dish_id = dish_info.dish_id
--- #             join (
--- #                 select
--- #                     member_id,
--- #                     member_name
--- #                 from dim_member_info
--- #             ) member_info
--- #             on order_detail.member_id = member_info.member_id
--- #         ) tb1
--- #         group by member_id, member_name, dish_category
--- #     ) tb2
--- # ) tb3
--- # where rn <= 3;
-
+-- 分析口味和品类的用户偏好
 
 select
     flavor,
@@ -235,12 +106,14 @@ from (
             from flavor_dic
         ) flavor
     ) member_flavor
+    -- 保留左表中的所有记录，即使右表中没有匹配的记录，也会返回左表的记录，并将右表对应的字段填充为 NULL
     left join (
         -- 按照会员id、口味分组，统计消费次数
         select
             member_id,
             member_name,
             flavor,
+            -- 对每个分组，使用 sum(quantity) 统计会员对该口味的总消费量
             sum(quantity) ct
         from (
             select
@@ -266,6 +139,7 @@ from (
                     flavor
                 from dim_dish_info
             ) dish_info
+            -- 通过 join 操作，将订单中的 dish_id 与菜品信息表中的 dish_id 关联起来，从而获取每个订单中菜品的口味信息
             on order_detail.dish_id = dish_info.dish_id
             join (
                 select
@@ -273,8 +147,10 @@ from (
                     member_name
                 from dim_member_info
             ) member_info
+            -- 通过 join 操作，将订单中的 member_id 与会员信息表中的 member_id 关联起来，从而获取每个订单对应的会员名称
             on order_detail.member_id = member_info.member_id
         ) tb1
+        -- 在获取了所有订单、菜品和会员信息后，按以下字段进行分组
         group by member_id, member_name, flavor
     ) order_info
     on member_flavor.member_id = order_info.member_id

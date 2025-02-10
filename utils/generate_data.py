@@ -2,6 +2,18 @@ import csv
 import random
 from datetime import datetime, timedelta
 
+DISH_FLAVOR = [
+    '酸', '柠檬味', '甜', '香甜', '酸甜', '果味', '微辣', '香辣', '麻辣', 
+    '油腻', '酸辣', '辣', '中辣', '咸鲜', '酱香', '香草味', '奶香', '葱香', 
+    '蒜蓉', '蒜香', '清香', '香酥', '清淡', '爽口', '原味', 
+]   # 25
+DISH_CATEGORY = [
+    '猪肉类', '羊肉类', '其他肉类', '牛肉类', '家禽类', '鱼类', '蟹类', '虾类', 
+    '其他水产', '贝壳类', '饮料类', '红酒类', '啤酒类', '白酒类', '叶菜类', '茎菜类', 
+    '花菜类', '海藻类', '果菜类', '根菜类', '粥类', '甜点类', '糕点类', '肠粉类', 
+    '面包类', '米饭类', '面食类', 
+]   # 27
+
 # 生成随机数据的辅助函数
 def random_date(start, end):
     return start + timedelta(seconds=random.randint(0, int((end - start).total_seconds())))
@@ -10,13 +22,13 @@ def generate_test_data(num_records=100):
     # 生成菜品信息表数据
     # 每个菜品有唯一的dish_id，随机的dish_name、flavor、price、cost、recommendation_level和dish_category。
     dishes = []
-    for dish_id in range(1, 51):
+    for dish_id in range(1, 101):
         dish_name = f"Dish{dish_id}"
-        flavor = random.choice(["Spicy", "Sweet", "Sour", "Salty"])
+        flavor = random.choice(DISH_FLAVOR)
         price = round(random.uniform(10, 100), 2)
         cost = round(price * 0.6, 2)
         recommendation_level = round(random.uniform(1, 5), 1)
-        dish_category = random.choice(["Appetizer", "Main Course", "Dessert", "Beverage"])
+        dish_category = random.choice(DISH_CATEGORY)
         dishes.append({
             "dish_id": dish_id,
             "dish_name": dish_name,
@@ -30,7 +42,7 @@ def generate_test_data(num_records=100):
     # 生成会员信息表数据
     # 每个会员有唯一的member_id，随机的member_name、gender、age、member_join_date、phone_number和membership_level。
     members = []
-    for member_id in range(1, 101):
+    for member_id in range(1, 201):
         member_name = f"Member{member_id}"
         gender = random.choice(["男", "女"])
         age = random.randint(18, 60)
@@ -98,8 +110,8 @@ def generate_test_data(num_records=100):
         })
     
     # 保存为CSV文件
-    # output_table = ["菜品信息表", "会员信息表", "订单信息表", "订单详情表"]
-    output_table = ["会员信息表"]
+    output_table = ["菜品信息表", "会员信息表", "订单信息表", "订单详情表"]
+    # output_table = ["会员信息表"]
     save_dir = '../data'
     if "菜品信息表" in output_table:
         with open(f'{save_dir}/菜品信息表.csv', 'w', newline='') as f:
@@ -135,4 +147,4 @@ def generate_test_data(num_records=100):
                 writer.writerow(detail)
 
 if __name__ == "__main__":
-    generate_test_data(100)
+    generate_test_data(1000)
